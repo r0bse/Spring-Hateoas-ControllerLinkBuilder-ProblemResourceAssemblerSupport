@@ -2,25 +2,32 @@ package hello;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 
-import org.springframework.http.HttpEntity;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.ExposesResourceFor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@ExposesResourceFor(GreetingResource.class)
+@RequestMapping("/{var}")
 public class GreetingController {
+
+    @Autowired
+    private BeanFactory beanFactory;
+    @Autowired
+    private GreetingAssembler greetingAssembler;
 
     private static final String TEMPLATE = "Hello, %s!";
 
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping("/greeting")
-    public HttpEntity<Greeting> greeting(
-            @RequestParam(value = "name", required = false, defaultValue = "World") String name) {
+    public GreetingResource greeting( @PathVariable("var") String var ) {
 
-        Greeting greeting = new Greeting(String.format(TEMPLATE, name));
-        greeting.add(linkTo(methodOn(GreetingController.class).greeting(name)).withSelfRel());
+        GreetingEntity greetingEntity = beanFactory.getBean(GreetingEntity.class, String.format(TEMPLATE, var));
+        GreetingResource greeting = greetingAssembler.toResource(greetingEntity);
+        greeting.add(linkTo(methodOn(GreetingController.class).greeting(var)).withSelfRel());
 
-        return new ResponseEntity<Greeting>(greeting, HttpStatus.OK);
+        return greeting;
     }
 }

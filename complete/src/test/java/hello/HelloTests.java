@@ -28,7 +28,7 @@ public class HelloTests {
 
 	@Test
 	public void envEndpointNotHidden() throws Exception {
-		Traverson traverson = new Traverson(new URI("http://localhost:" + this.port + "/greeting"), MediaTypes.HAL_JSON);
+		Traverson traverson = new Traverson(new URI("http://localhost:" + this.port + "/myVariable/greeting"), MediaTypes.HAL_JSON);
 		String greeting = traverson.follow("self").toObject("$.content");
 		assertEquals("Hello, World!", greeting);
 	}
