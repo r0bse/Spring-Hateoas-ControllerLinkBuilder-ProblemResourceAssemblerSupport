@@ -9,4 +9,4 @@ How to reproduce:
 
 * build with maven
 * start application
-* localhost:8080/my_Variable/greeting should show a hateoas conform json 
+* "localhost:8080/my_Variable/greeting" should show a hateoas conform json, instead I see an errorpage
